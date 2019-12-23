@@ -1,6 +1,6 @@
 ## Statusryne
 
-This is a fairly simple satusline and tabline plugin for vim.
+A simple satusline and tabline plugin for vim.
 
 #### Satusline
 

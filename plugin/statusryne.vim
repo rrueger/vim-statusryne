@@ -99,13 +99,16 @@ function! ChangeStatuslineColor()
     " Normal Mode.
     exe 'hi! StatusLineMode ctermbg=010'
   elseif (mode() =~# '\v(v|V)')
-" Visual Mode.
+    " Visual Mode.
     exe 'hi! StatusLineMode ctermbg=005'
   elseif (mode() ==# 'i')
-" Insert Mode.
+    " Insert Mode.
     exe 'hi! StatusLineMode ctermbg=004'
+  elseif (mode() ==# 'R')
+    " Replace Mode.
+    exe 'hi! StatusLineMode ctermbg=001'
   else
-" Other Mode.
+    " Other Mode.
     exe 'hi! StatusLineMode ctermbg=010'
   endif
 

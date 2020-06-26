@@ -1,4 +1,4 @@
-## Statusryne
+## Ryan's Statusline: Statusryne
 
 A simple satusline and tabline plugin for vim.
 

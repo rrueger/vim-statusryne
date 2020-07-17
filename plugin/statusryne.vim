@@ -15,25 +15,25 @@ set noshowmode
 
 " Mode Dict {{{
 let g:currentmode={
-    \ 'n'      : 'NORMAL',
-    \ 'no'     : 'N-PENDING',
-    \ 'v'      : 'VISUAL',
-    \ 'V'      : 'V-LINE',
-    \ '\<C-V>' : 'V Block',
-    \ 's'      : 'SELECT',
-    \ 'S'      : 'S-LINE',
-    \ '\<C-S>' : 'S-BLOCK',
-    \ 'i'      : 'INSERT',
-    \ 'R'      : 'REPLACE',
-    \ 'Rv'     : 'V-REPLACE',
-    \ 'c'      : 'COMMAND',
-    \ 'cv'     : 'VIM-EX',
-    \ 'ce'     : 'EX',
-    \ 'r'      : 'PROMPT',
-    \ 'rm'     : 'MORE',
-    \ 'r?'     : 'CONFIRM',
-    \ '!'      : 'SHELL',
-    \ 't'      : 'TERMINAL'
+    \ "n"      : "NORMAL",
+    \ "no"     : "N-PENDING",
+    \ "v"      : "VISUAL",
+    \ "V"      : "V-LINE",
+    \ "\<C-V>" : "V-Block",
+    \ "s"      : "SELECT",
+    \ "S"      : "S-LINE",
+    \ "\<C-S>" : "S-BLOCK",
+    \ "i"      : "INSERT",
+    \ "R"      : "REPLACE",
+    \ "Rv"     : "V-REPLACE",
+    \ "c"      : "COMMAND",
+    \ "cv"     : "VIM-EX",
+    \ "ce"     : "EX",
+    \ "r"      : "PROMPT",
+    \ "rm"     : "MORE",
+    \ "r?"     : "CONFIRM",
+    \ "!"      : "SHELL",
+    \ "t"      : "TERMINAL"
     \}
 " }}}
 " (f) Git Info {{{

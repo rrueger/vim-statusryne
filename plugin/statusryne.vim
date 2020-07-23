@@ -221,12 +221,12 @@ function! FileName()
     " 2) Show only first character of every directory in path.
     " 3) Show only basename.
 
-    if (&columns > len(fullname) + remainder)
+    if (winwidth(0) > len(fullname) + remainder)
 
       let shortpath = substitute(fullname, $HOME, '~', "")
       return ' ' . shortpath
 
-    elseif (&columns > len(pathshorten(fullname)) + remainder)
+    elseif (winwidth(0) > len(pathshorten(fullname)) + remainder)
 
       let home = pathshorten($HOME . '/')
       let shortpath = substitute(pathshorten(fullname), home, '~/', "")
@@ -358,7 +358,7 @@ function! TabLine()
   " For equal with tabs, fitted to longest tab label.
   let g:maxlabellen = max([g:mintablabellen, MaxLen(g:tablabels)])
   " For full screen width equal width tabs.
-  " let g:maxlabellen = &columns / tabpagenr('$')
+  " let g:maxlabellen = winwidth(0) / tabpagenr('$')
 
   " }}}
 

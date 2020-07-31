@@ -145,20 +145,15 @@ function! FileStats()
     " endfor
 
     " Using system utils
-    let size_cmd = 'du -sh ' . expand('%:p')
+    let size_cmd = 'du -shL ' . expand('%:p') . ' | cut -f1'
+    let word_count_cmd = 'wc -w < ' . expand('%:p')
+    let char_count_cmd = 'wc -m < ' . expand('%:p')
+
     let size = system(size_cmd)
-    " Parse.
-    let size_pattern = '^\(\S*\).*$'
-    let size = substitute(size, size_pattern, '\1', '')
+    let word_count = system(word_count_cmd) . '(w) '
+    let char_count = system(char_count_cmd) . '(c) '
 
-    " Word and character count.
-    let counts_cmd = 'wc -mw ' . expand('%:p')
-    let counts = system(counts_cmd)
-    " Parse.
-    let counts_pattern = '^\s*\([0-9]*\)\s*\([0-9]*\).*$'
-    let counts = substitute(counts, counts_pattern, '\1(w) \2(c)', '')
-
-    let stats = counts . ' ' . size
+    let stats = word_count . char_cound . size
 
   endif
 

@@ -46,40 +46,36 @@ augroup END
 
 function! GitInfo()
 
-  let git = ''
   let git_cmd = 'git -C ' . expand('%:p:h')
 
-  let branch_cmd = git_cmd . ' rev-parse --abbrev-ref HEAD 2> /dev/null'
+  " git puts strange characters on branch output.
+  " Sanitise output, remove non-printable characters bar space.
+  let branch_cmd = git_cmd . ' rev-parse --abbrev-ref HEAD 2> /dev/null' . " | tr -dc '[:graph:] '"
   let branch = system(branch_cmd)
-
-  " git puts strange characters on branch output. Sanitise output, remove
-  " non-printable characters, i.e. those in ascii range ~ (tilde) to -
-  " (minus).
-  let branch = substitute(branch, '[^ -~]\+', '', '')
 
   " Get more information if in a git repo.
   if branch != ''
-    let git .= '  '
-    let git .= '(' . branch . ')'
+    let branch = '  (' . branch . ')'
 
     " Could be a new file in a git repo with no name yet.
     if expand('%:p') != ''
-      let stats_cmd = git_cmd . ' diff --numstat ' . expand('%:p' )
+      " git puts strange characters on branch output.
+      " Sanitise output, remove non-printable characters bar space.
+      " Need to escape backslashes in sed expresssion
+      let stats_cmd = git_cmd . ' diff --numstat ' . expand('%:p' ) . " 2> /dev/null | sed 's/^\\([0-9]*\\)\\s*\\([0-9]*\\).*$/\\1(+) \\2(-)/' | tr -dc '[:graph:] '"
       let stats = system(stats_cmd)
 
-      " Could be a non-tracked file. Then there are no stats.
-      if stats != ''
-        " Parse.
-        let stats_pattern = '^\([0-9]*\)\s*\([0-9]*\).*$'
-        let stats = substitute(stats, stats_pattern, '\1(+) \2(-)', '')
-        " Truncate.
-        let stats = stats[0:14]
-        let git .= ' ' . stats
+      if stats == ''
+        " Could be a non-tracked file. Then there are no stats.
+        return  branch . ' (Not tracked)'
+      else
+        return branch . ' ' . stats
       endif
-    endif
-  endif
 
-  return git
+    endif
+  else
+    return ''
+  endif
 endfunction
 " }}}
 " (f) Colours {{{
@@ -125,39 +121,38 @@ augroup END
 
 function! FileStats()
 
-  let stats = ''
-
   " If buffer hasn't been written yet, don't get size.
-  if str2float(getfsize(expand('%:p'))) > 0
+  if filereadable(expand('%:p'))
 
     " Buffer size.
-    " let bytes = str2float(getfsize(expand('%:p')))
+    let bytes = str2float(getfsize(expand('%:p')))
 
-    " if bytes <= 0
-    "   return '0'
-    " endif
+    for suffix in ['B', 'K', 'M', 'G']
+      if (abs(bytes) < 1000)
+        let size = string(float2nr(round(bytes))) . suffix
+        break
+      endif
+      let bytes = bytes / 1000
+    endfor
 
-    " for size in ["B", "K", "M", "G"]
-    "   if (abs(bytes) < 1000)
-    "     return string(float2nr(round(bytes))) . size
-    "   endif
-    "   let bytes = bytes / 1000
-    " endfor
+    " Word count
+    let old_status = v:statusmsg
+    exe ":silent normal g\<c-g>"
+    if v:statusmsg == '--No lines in buffer--'
+      let word_count = '0(w)'
+      let char_count = '0(c)'
+    else
+      let word_count = str2nr(split(v:statusmsg)[11]) . '(w)'
+      let char_count = str2nr(split(v:statusmsg)[15]) . '(c)'
+    endif
+    let v:statusmsg = old_status
 
-    " Using system utils
-    let size_cmd = 'du -shL ' . expand('%:p') . ' | cut -f1'
-    let word_count_cmd = 'wc -w < ' . expand('%:p')
-    let char_count_cmd = 'wc -m < ' . expand('%:p')
+    return word_count . ' ' . char_count . ' ' . size
 
-    let size = system(size_cmd)
-    let word_count = system(word_count_cmd) . '(w) '
-    let char_count = system(char_count_cmd) . '(c) '
-
-    let stats = word_count . char_cound . size
+  else
+    return ''
 
   endif
-
-  return stats
 
 endfunction
 " }}}
@@ -168,7 +163,6 @@ augroup ReadOnlyStatus
   autocmd!
   autocmd BufEnter,WinEnter * let b:readonly_flag = ReadOnly()
 augroup END
-
 
 function! ReadOnly()
 
@@ -189,7 +183,6 @@ augroup FileName
   autocmd!
   autocmd BufEnter,VimResized * let b:filename = FileName()
 augroup END
-
 
 function! FileName()
 

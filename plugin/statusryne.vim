@@ -170,6 +170,7 @@ function! ReadOnly()
     return "[READ ONLY]"
   else
     return ""
+  endif
 
 endfunction
 " }}}

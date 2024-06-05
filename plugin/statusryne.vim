@@ -135,19 +135,23 @@ function! FileStats()
       let bytes = bytes / 1000
     endfor
 
-    " Word count
-    let old_status = v:statusmsg
-    exe ":silent normal g\<c-g>"
-    if v:statusmsg == '--No lines in buffer--'
-      let word_count = '0(w)'
-      let char_count = '0(c)'
+    if exists("g:statusryne_word_char_count") && g:statusryne_word_char_count == "0"
+      return size
     else
-      let word_count = str2nr(split(v:statusmsg)[11]) . '(w)'
-      let char_count = str2nr(split(v:statusmsg)[15]) . '(c)'
-    endif
-    let v:statusmsg = old_status
+      " Word count
+      let old_status = v:statusmsg
+      exe ":silent normal g\<c-g>"
+      if v:statusmsg == '--No lines in buffer--'
+        let word_count = '0(w)'
+        let char_count = '0(c)'
+      else
+        let word_count = str2nr(split(v:statusmsg)[11]) . '(w)'
+        let char_count = str2nr(split(v:statusmsg)[15]) . '(c)'
+      endif
+      let v:statusmsg = old_status
 
-    return word_count . ' ' . char_count . ' ' . size
+      return word_count . ' ' . char_count . ' ' . size
+    endif
 
   else
     return ''

@@ -377,7 +377,12 @@ function! TabLine()
     " Number of buffers in tab.
     let t:bcount = len(tabpagebuflist(t+1))
     " Total amount of whitespace to fill, after considering curent tab label.
-    let t:remainder = g:maxlabellen - len(g:tablabels[t])
+    if exists("g:statusryne_adaptive_padding") && g:statusryne_adaptive_padding == "1"
+      " Total amount of whitespace to fill, after considering curent tab label.
+      let t:remainder = g:maxlabellen - len(g:tablabels[t])
+    else
+      let t:remainder = 0
+    endif
     let t:pad = t:remainder /2 + g:padding
 
     " Iter over buffers in tab.
